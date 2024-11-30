@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  redis-refresh-token:
+    image: redis:alpine
+    command: redis-server --requirepass 1234
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/refresh-token-data:/data
