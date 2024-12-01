@@ -13,8 +13,11 @@
     <form id="signupForm" style="display:none;">
         <input type="hidden" id="provider" name="provider" th:value="${provider}">
         <input type="hidden" id="role" name="role" th:value="${role}">
-        <input type="email" id="email" name="email" th:value="${email}"  readonly>
+        <input type="email" id="email" name="email" th:value="${email}"  readonly><br>
         <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
+        <button class="join-button" type="button" id="dupliNick">중복확인</button><br>
+        <input type="text" id="phone" name="nickname" placeholder="전화번호 입력하세요">
+        <button class="join-button" type="button" id="dupliPhone">중복확인</button><br>
         <button class="join-button" type="button" id="signup">가입하기</button>
         <button class="join-button" type="button" th:href="@{/}">취소</button>
     </form>
