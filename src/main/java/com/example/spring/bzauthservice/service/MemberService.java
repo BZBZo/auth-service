@@ -17,7 +17,6 @@ public class MemberService {
     }
 
     public void join(Member member) {
-        System.out.println("저장 하나요");
         System.out.println(member.getEmail()+"  "+member.getNickname()+"  "+member.getUserRole());
         memberRepository.save(member);
         System.out.println("저장했어요");

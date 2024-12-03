@@ -23,13 +23,13 @@ public class SignApiController {
             memberService.join(securityUserDto.toMember());
             return ResponseEntity.ok(
                     JoinResponseDTO.builder()
-                            .url("/login")
+                            .url("/welcome")
                             .build()
             );
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     JoinResponseDTO.builder()
-                            .url("/")
+                            .url("/welcome")
                             .build()
             );
         }

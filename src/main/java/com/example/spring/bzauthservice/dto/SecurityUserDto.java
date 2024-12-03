@@ -9,17 +9,18 @@ import lombok.Getter;
 public class SecurityUserDto {
     private Long memberNo;
     private String email;
-    private String role;
     private String nickname;
+    private String phone;
     private String provider;
-
+    private String role;
 
     public Member toMember(){
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
-                .userRole(role)
+                .phone(phone)
                 .provider(provider)
+                .userRole(role)
                 .build();
 
     }
