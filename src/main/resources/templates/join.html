@@ -10,20 +10,26 @@
 </head>
 <body>
 <form id="signupForm" style="display:none;">
-    <button class="btn btn-primary role-button" type="button" data-role="seller">판매자</button>
-    <button class="btn btn-primary role-button" type="button" data-role="buyer">구매자</button>
-    <input type="hidden" id="provider" name="provider" th:value="${provider}">
+    <button class="btn btn-primary role-button" type="button" data-role="ROLE_SELLER">판매자</button>
+    <button class="btn btn-primary role-button" type="button" data-role="ROLE_CUSTOMER">구매자</button><br>
     <input type="hidden" id="role" name="role">
+
     <div id="businessNumberContainer" style="display:none;">
-        <input type="text" id="businessNumber" name="businessNumber" placeholder="사업자번호를 입력하세요"><br>
+        <input type="text" id="businessNumber" name="businessNumber" placeholder="사업자번호를 입력하세요">
+        <button class="join-button" type="button" id="dupliSell">중복확인</button><br>
     </div>
+
     <input type="email" id="email" name="email" th:value="${email}" readonly><br>
+    <input type="text" id="provider" name="provider" th:value="${provider}" readonly><br>
+
     <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
     <button class="join-button" type="button" id="dupliNick">중복확인</button><br>
+
     <input type="text" id="phone" name="phone" placeholder="전화번호 입력하세요">
     <button class="join-button" type="button" id="dupliPhone">중복확인</button><br>
+
     <button class="join-button" type="button" id="signup">가입하기</button>
-    <button class="join-button" type="button" th:href="@{/}">취소</button>
+    <button class="join-button" type="button" id="cancelButton">취소</button>
 </form>
 </body>
 </html>

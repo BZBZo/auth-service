@@ -4,13 +4,17 @@ $(document).ready(() => {
 
     let confirmMessage = `${email}로 가입된 회원이 없습니다.\n${provider} 간편 가입을 진행하시겠습니까?`;
     if (confirm(confirmMessage)) {
-        $('#email').val(email); // 이메일 자동 채움
         $('#signupForm').show();  // 폼을 표시합니다.
 
-        $('.role-button').click(function() {
+        // 이벤트 위임을 사용하여 role-button에 클릭 이벤트를 바인딩
+        $('#signupForm').on('click', '.role-button', function() {
+            $('.role-button').css('background-color', ''); // 다른 모든 버튼의 배경색을 초기화
+            $(this).css('background-color', '#4CAF50'); // 현재 클릭된 버튼의 배경색 변경
+
             let role = $(this).data('role');
             $('#role').val(role);
-            if (role === 'seller') {
+
+            if (role === 'ROLE_SELLER') {
                 $('#businessNumberContainer').show();
             } else {
                 $('#businessNumberContainer').hide();
@@ -26,7 +30,7 @@ $(document).ready(() => {
                 role: $('#role').val()
             };
 
-            if ($('#role').val() === 'seller') {
+            if ($('#role').val() === 'ROLE_SELLER') {
                 formData.businessNumber = $('#businessNumber').val();
             }
 
@@ -47,6 +51,10 @@ $(document).ready(() => {
             });
         });
     } else {
-        window.location.href = '/'; // 취소 시 홈으로 리디렉션
+        window.location.href = '/welcome'; // 취소 시 홈으로 리디렉션
     }
+
+    $('#cancelButton').click(function() {
+        window.location.href = '/welcome'; // 취소 버튼 클릭 시 /welcome으로 이동
+    });
 });
