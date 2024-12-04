@@ -15,23 +15,30 @@ $(document).ready(() => {
             $('#role').val(role);
 
             if (role === 'ROLE_SELLER') {
-                $('#businessNumberContainer').show();
+                $('#sellerContainer').show();
+                $('#customerContainer').hide();
             } else {
-                $('#businessNumberContainer').hide();
+                $('#sellerContainer').hide();
+                $('#customerContainer').show();
             }
         });
 
         $('#signup').click(() => {
             let formData = {
                 email: email,
-                nickname: $('#nickname').val(),
-                phone: $('#phone').val(),
                 provider: provider,
                 role: $('#role').val()
             };
 
             if ($('#role').val() === 'ROLE_SELLER') {
                 formData.businessNumber = $('#businessNumber').val();
+                formData.nickname = $('#shopName').val();
+                formData.phone = $('#shopPhone').val();
+            }
+
+            if ($('#role').val() === 'ROLE_CUSTOMER') {
+                formData.nickname = $('#nickname').val();
+                formData.phone = $('#customerPhone').val();
             }
 
             $.ajax({

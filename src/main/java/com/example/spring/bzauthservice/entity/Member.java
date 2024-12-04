@@ -27,4 +27,7 @@ public class Member {
 
     private String provider;
 
+    @Column(nullable = true)
+    private String businessNumber;
+
 }
