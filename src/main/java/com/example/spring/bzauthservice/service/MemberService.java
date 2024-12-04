@@ -21,4 +21,19 @@ public class MemberService {
         memberRepository.save(member);
         System.out.println("저장했어요");
     }
+    public boolean checkBusinessNumberExists(String businessNumber) {
+        return memberRepository.findByBusinessNumber(businessNumber).isPresent();
+    }
+
+    public boolean checkNicknameExists(String nickname) {
+        return memberRepository.findByNickname(nickname).isPresent();
+    }
+
+    public boolean checkSellerPhoneExists(String phone) {
+        return memberRepository.findByPhoneAndUserRole(phone, "ROLE_SELLER").isPresent();
+    }
+
+    public boolean checkCustomerPhoneExists(String phone) {
+        return memberRepository.findByPhoneAndUserRole(phone, "ROLE_CUSTOMER").isPresent();
+    }
 }

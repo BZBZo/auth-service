@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class SignController {
+    @GetMapping("/welcome")
+    public String login() {
+        return "login";
+    }
 
     @GetMapping("/loginSuccess")
     public String home(){
