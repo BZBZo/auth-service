@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -18,13 +19,14 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auths")
 public class AuthController {
 
     private final RefreshTokenRepository tokenRepository;
     private final RefreshTokenService tokenService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("token/logout")
+    @PostMapping("/token/logout")
     public ResponseEntity<StatusResponseDto> logout(@RequestHeader("Authorization") final String accessToken) {
 
         // 엑세스 토큰으로 현재 Redis 정보 삭제

@@ -18,8 +18,10 @@ public class Member {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
@@ -27,7 +29,10 @@ public class Member {
 
     private String provider;
 
-    @Column(nullable = true)
+    @Column(nullable = true, unique = true)
     private String businessNumber;
 
+    private String profilePic;
+
+    private String introduce;
 }
