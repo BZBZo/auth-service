@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/token/**", "/join", "loginSuccess", "/welcome", "/check/**").permitAll()
+                        .requestMatchers("/auths/token/**", "/auths/join", "/auths/signin", "/auths/check/**").permitAll()
                         .anyRequest().authenticated())
 
                 .oauth2Login(oauth2 -> oauth2   // OAuth2 로그인 설정시작

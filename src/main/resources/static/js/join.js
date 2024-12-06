@@ -73,7 +73,7 @@ $(document).ready(() => {
         $('#dupliBusinessNum').click(function() {
             var businessNumber = $('#businessNumber').val();
             $.ajax({
-                url: '/check/businessNumber',
+                url: '/auths/check/businessNumber',
                 type: 'POST',
                 data: { businessNumber: businessNumber },
                 success: function(response) {
@@ -88,7 +88,7 @@ $(document).ready(() => {
         $('#dupliShop').click(function() {
             var shopName = $('#shopName').val();
             $.ajax({
-                url: '/check/nickname',
+                url: '/auths/check/nickname',
                 type: 'POST',
                 data: { nickname: shopName },
                 success: function(response) {
@@ -103,7 +103,7 @@ $(document).ready(() => {
         $('#dupliNick').click(function() {
             var nickname = $('#nickname').val();
             $.ajax({
-                url: '/check/nickname',
+                url: '/auths/check/nickname',
                 type: 'POST',
                 data: { nickname: nickname },
                 success: function(response) {
@@ -118,7 +118,7 @@ $(document).ready(() => {
         $('#dupliSellerPhone').click(function() {
             var sellerPhone = $('#sellerPhone').val();
             $.ajax({
-                url: '/check/sellerPhone',
+                url: '/auths/check/sellerPhone',
                 type: 'POST',
                 data: { phone: sellerPhone },
                 success: function(response) {
@@ -133,7 +133,7 @@ $(document).ready(() => {
         $('#dupliCustomerPhone').click(function() {
             var customerPhone = $('#customerPhone').val();
             $.ajax({
-                url: '/check/customerPhone',
+                url: '/auths/check/customerPhone',
                 type: 'POST',
                 data: { phone: customerPhone },
                 success: function(response) {
@@ -164,7 +164,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: 'POST',
-                url: '/join',
+                url: '/auths/join',
                 data: JSON.stringify(formData),
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
@@ -175,14 +175,15 @@ $(document).ready(() => {
                 error: function(error) {
                     console.error('오류 발생:', error);
                     alert('회원가입 중 오류가 발생했습니다.');
+                    window.location.href = "/auths/signin"
                 }
             });
         });
     } else {
-        window.location.href = '/welcome';
+        window.location.href = '/auths/signin';
     }
 
     $('#cancelButton').click(function() {
-        window.location.href = '/welcome';
+        window.location.href = '/auths/signin';
     });
 });
