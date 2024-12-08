@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Slf4j
 @RestController
@@ -18,6 +19,28 @@ import org.springframework.web.bind.annotation.*;
 public class SignApiController {
 
     private final MemberService memberService;
+
+    @PostMapping("/signin")
+    public RedirectView signin(@RequestParam String provider) {
+        String authorizationUrl = "";
+
+        switch (provider.toLowerCase()) {
+            case "google":
+                authorizationUrl = "/oauth2/authorization/google";
+                break;
+            case "naver":
+                authorizationUrl = "/oauth2/authorization/naver";
+                break;
+            case "kakao":
+                authorizationUrl = "/oauth2/authorization/kakao";
+                break;
+            default:
+                // 잘못된 제공자 처리
+                return new RedirectView("/error");
+        }
+
+        return new RedirectView(authorizationUrl);
+    }
 
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody SecurityUserDto securityUserDto) {
