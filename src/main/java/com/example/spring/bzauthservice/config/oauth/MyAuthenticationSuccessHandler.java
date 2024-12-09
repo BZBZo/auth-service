@@ -51,7 +51,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             log.info("jwtToken = {}", token.getAccessToken());
 
             // accessToken을 쿼리스트링에 담는 url을 만들어준다.
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8085/loginSuccess")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8084/loginSuccess")
                     .queryParam("accessToken", token.getAccessToken())
                     .build()
                     .encode(StandardCharsets.UTF_8)
@@ -64,7 +64,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         } else {
             // 회원 존재하지 않으면 여기로
             // 회원이 존재하지 않을경우, 서비스 제공자와 email을 쿼리스트링으로 전달하는 url을 만들어준다.
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8085/join")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8084/webs/join")
                     .queryParam("email", (String) oAuth2User.getAttribute("email"))
                     .queryParam("provider", provider)
                     .queryParam("role", role)

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -20,28 +20,6 @@ public class SignApiController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signin")
-    public RedirectView signin(@RequestParam String provider) {
-        String authorizationUrl = "";
-
-        switch (provider.toLowerCase()) {
-            case "google":
-                authorizationUrl = "/oauth2/authorization/google";
-                break;
-            case "naver":
-                authorizationUrl = "/oauth2/authorization/naver";
-                break;
-            case "kakao":
-                authorizationUrl = "/oauth2/authorization/kakao";
-                break;
-            default:
-                // 잘못된 제공자 처리
-                return new RedirectView("/error");
-        }
-
-        return new RedirectView(authorizationUrl);
-    }
-
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody SecurityUserDto securityUserDto) {
         log.info("join");
@@ -49,20 +27,21 @@ public class SignApiController {
             memberService.join(securityUserDto.toMember());
             return ResponseEntity.ok(
                     JoinResponseDTO.builder()
-                            .url("/auths/signin")
+                            .url("/webs/signin")
                             .build()
             );
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     JoinResponseDTO.builder()
-                            .url("/auths/signin")
+                            .url("/webs/join")
                             .build()
             );
         }
     }
 
     @PostMapping("/check/businessNumber")
-    public ResponseEntity<?> checkBusinessNumber(@RequestParam String businessNumber) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<?> checkBusinessNumber(@Valid @RequestBody String businessNumber) {
         System.out.println("사업자 번호 중복 체크");
         boolean exists = memberService.checkBusinessNumberExists(businessNumber);
         System.out.println(exists);
@@ -84,7 +63,8 @@ public class SignApiController {
     }
 
     @PostMapping("/check/nickname")
-    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<?> checkNickname(@Valid @RequestBody String nickname) {
         boolean exists = memberService.checkNicknameExists(nickname);
         if (exists) {
             return ResponseEntity.ok(
@@ -104,7 +84,8 @@ public class SignApiController {
     }
 
     @PostMapping("/check/sellerPhone")
-    public ResponseEntity<?> checkShopPhone(@RequestParam String phone) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<?> checkSellerPhone(@Valid @RequestBody String phone) {
         boolean exists = memberService.checkSellerPhoneExists(phone);
         if (exists) {
             return ResponseEntity.ok(
@@ -124,7 +105,8 @@ public class SignApiController {
     }
 
     @PostMapping("/check/customerPhone")
-    public ResponseEntity<?> checkCustomerPhone(@RequestParam String phone) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<?> checkCustomerPhone(@Valid @RequestBody String phone) {
         boolean exists = memberService.checkCustomerPhoneExists(phone);
         if (exists) {
             return ResponseEntity.ok(
