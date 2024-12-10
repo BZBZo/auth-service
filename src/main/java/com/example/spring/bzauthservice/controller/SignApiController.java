@@ -69,14 +69,14 @@ public class SignApiController {
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("동일한 이름의 상점이 존재합니다. 다른 이름을 입력해주세요")
+                            .message("동일한 이름이 존재합니다. 다른 이름을 입력해주세요")
                             .status("disable")
                             .build()
             );
         } else {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용 가능한 상점명입니다.")
+                            .message("사용 가능합니다.")
                             .status("available")
                             .build()
             );
@@ -111,14 +111,14 @@ public class SignApiController {
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용중인 닉네임입니다.")
+                            .message("이미 가입한 구매자입니다.")
                             .status("disable")
                             .build()
             );
         } else {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용 가능한 닉네임입니다.")
+                            .message("사용 가능한 번호입니다.")
                             .status("available")
                             .build()
             );
