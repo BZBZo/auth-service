@@ -41,7 +41,7 @@ public class SignApiController {
 
     @PostMapping("/check/businessNumber")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkBusinessNumber(@Valid @RequestBody String businessNumber) {
+    public ResponseEntity<?> checkBusinessNumber(@Valid @RequestParam String businessNumber) {
         System.out.println("사업자 번호 중복 체크");
         boolean exists = memberService.checkBusinessNumberExists(businessNumber);
         System.out.println(exists);
@@ -64,8 +64,10 @@ public class SignApiController {
 
     @PostMapping("/check/nickname")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkNickname(@Valid @RequestBody String nickname) {
+    public ResponseEntity<?> checkNickname(@Valid @RequestParam String nickname) {
         boolean exists = memberService.checkNicknameExists(nickname);
+        System.out.println(nickname);
+        System.out.println(exists);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
@@ -85,8 +87,8 @@ public class SignApiController {
 
     @PostMapping("/check/sellerPhone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkSellerPhone(@Valid @RequestBody String phone) {
-        boolean exists = memberService.checkSellerPhoneExists(phone);
+    public ResponseEntity<?> checkSellerPhone(@Valid @RequestParam String sellerPhone) {
+        boolean exists = memberService.checkSellerPhoneExists(sellerPhone);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
@@ -106,8 +108,8 @@ public class SignApiController {
 
     @PostMapping("/check/customerPhone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkCustomerPhone(@Valid @RequestBody String phone) {
-        boolean exists = memberService.checkCustomerPhoneExists(phone);
+    public ResponseEntity<?> checkCustomerPhone(@Valid @RequestParam String customerPhone) {
+        boolean exists = memberService.checkCustomerPhoneExists(customerPhone);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
