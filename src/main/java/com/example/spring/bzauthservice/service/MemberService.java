@@ -36,4 +36,8 @@ public class MemberService {
     public boolean checkCustomerPhoneExists(String phone) {
         return memberRepository.findByPhoneAndUserRole(phone, "ROLE_CUSTOMER").isPresent();
     }
+
+    public Optional<Member> findByEmailAndProvider(String email, String provider) {
+        return memberRepository.findByEmailAndProvider(email, provider);
+    }
 }
