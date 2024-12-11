@@ -6,14 +6,15 @@ import com.example.spring.bzauthservice.dto.TokenResponseStatus;
 import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.service.RefreshTokenService;
 import com.example.spring.bzauthservice.token.RefreshToken;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -54,6 +55,22 @@ public class AuthController {
         }
 
         return ResponseEntity.badRequest().body(TokenResponseStatus.addStatus(400, null));
+    }
+
+    @GetMapping("/token")
+    public ResponseEntity<?> getToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    String token = cookie.getValue();
+                    if (jwtUtil.verifyToken(token)) {
+                        return ResponseEntity.ok(Collections.singletonMap("token", token));
+                    }
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
 }

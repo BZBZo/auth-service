@@ -3,6 +3,7 @@ package com.example.spring.bzauthservice.config.oauth;
 import com.example.spring.bzauthservice.config.jwt.JwtUtil;
 import com.example.spring.bzauthservice.token.GeneratedToken;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +51,23 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             GeneratedToken token = jwtUtil.generateToken(email, provider, role);
             log.info("jwtToken = {}", token.getAccessToken());
 
-            // 토큰을 응답 헤더에 추가
-            response.setHeader("Authorization", "Bearer " + token.getAccessToken());
+            // Bearer 접두어 없이 순수한 JWT 토큰을 설정
+            String jwtToken = token.getAccessToken();
 
-            // 클라이언트가 헤더를 확인하고 처리할 수 있도록 리다이렉트
+            // HTTP-Only 쿠키 생성
+            Cookie jwtCookie = new Cookie("Authorization", jwtToken); // Bearer 제거
+            jwtCookie.setHttpOnly(true); // HTTP-Only 설정
+            jwtCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
+            jwtCookie.setPath("/"); // 쿠키를 전체 도메인에서 사용할 수 있도록 설정
+            jwtCookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 유효기간 (7일)
+
+            // 응답에 쿠키 추가
+            response.addCookie(jwtCookie);
+
+            // 리다이렉트 처리
             String targetUrl = "http://localhost:8084/webs/loginSuccess";
             log.info("redirect 준비");
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
 
         } else {
             // 회원 존재하지 않으면 여기로
