@@ -41,7 +41,7 @@ public class SignApiController {
 
     @PostMapping("/check/businessNumber")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkBusinessNumber(@Valid @RequestBody String businessNumber) {
+    public ResponseEntity<?> checkBusinessNumber(@Valid @RequestParam String businessNumber) {
         System.out.println("사업자 번호 중복 체크");
         boolean exists = memberService.checkBusinessNumberExists(businessNumber);
         System.out.println(exists);
@@ -64,19 +64,21 @@ public class SignApiController {
 
     @PostMapping("/check/nickname")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkNickname(@Valid @RequestBody String nickname) {
+    public ResponseEntity<?> checkNickname(@Valid @RequestParam String nickname) {
         boolean exists = memberService.checkNicknameExists(nickname);
+        System.out.println(nickname);
+        System.out.println(exists);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("동일한 이름의 상점이 존재합니다. 다른 이름을 입력해주세요")
+                            .message("동일한 이름이 존재합니다. 다른 이름을 입력해주세요")
                             .status("disable")
                             .build()
             );
         } else {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용 가능한 상점명입니다.")
+                            .message("사용 가능합니다.")
                             .status("available")
                             .build()
             );
@@ -85,8 +87,8 @@ public class SignApiController {
 
     @PostMapping("/check/sellerPhone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkSellerPhone(@Valid @RequestBody String phone) {
-        boolean exists = memberService.checkSellerPhoneExists(phone);
+    public ResponseEntity<?> checkSellerPhone(@Valid @RequestParam String sellerPhone) {
+        boolean exists = memberService.checkSellerPhoneExists(sellerPhone);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
@@ -106,19 +108,19 @@ public class SignApiController {
 
     @PostMapping("/check/customerPhone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> checkCustomerPhone(@Valid @RequestBody String phone) {
-        boolean exists = memberService.checkCustomerPhoneExists(phone);
+    public ResponseEntity<?> checkCustomerPhone(@Valid @RequestParam String customerPhone) {
+        boolean exists = memberService.checkCustomerPhoneExists(customerPhone);
         if (exists) {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용중인 닉네임입니다.")
+                            .message("이미 가입한 구매자입니다.")
                             .status("disable")
                             .build()
             );
         } else {
             return ResponseEntity.ok(
                     DuplicateResponseDTO.builder()
-                            .message("사용 가능한 닉네임입니다.")
+                            .message("사용 가능한 번호입니다.")
                             .status("available")
                             .build()
             );

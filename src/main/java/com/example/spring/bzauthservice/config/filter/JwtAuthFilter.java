@@ -30,7 +30,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // request Header에서 AccessToken을 가져온다.
@@ -50,15 +49,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // AccessToken의 값이 있고, 유효한 경우에 진행한다.
         if (jwtUtil.verifyToken(atc)) {
 
-            // AccessToken 내부의 payload에 있는 email로 user를 조회한다. 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
-            Member findMember = memberRepository.findByEmail(jwtUtil.getUid(atc))
-                    .orElseThrow(IllegalStateException::new);
+            // AccessToken 내부의 payload에서 email과 provider 정보를 추출한다.
+            String email = jwtUtil.getUid(atc); // 기존에 email을 추출하는 메서드
+            String provider = jwtUtil.getProvider(atc); // 새롭게 추가된 provider 추출 메서드
+
+            // email과 provider로 user를 조회한다. 없다면 예외를 발생시킨다.
+            Member findMember = memberRepository.findByEmailAndProvider(email, provider)
+                    .orElseThrow(() -> new IllegalStateException("회원이 존재하지 않습니다."));
 
             // SecurityContext에 등록할 User 객체를 만들어준다.
             SecurityUserDto userDto = SecurityUserDto.builder()
                     .memberNo(findMember.getMemberNo())
                     .email(findMember.getEmail())
-                    .role("ROLE_".concat(findMember.getUserRole()))
+                    .provider(findMember.getProvider())
+                    .role(findMember.getUserRole()) //ROLE_
                     .nickname(findMember.getNickname())
                     .build();
 

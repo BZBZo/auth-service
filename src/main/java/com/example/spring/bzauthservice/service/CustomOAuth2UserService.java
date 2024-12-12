@@ -47,8 +47,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // 사용자 email(또는 id) 정보를 가져온다.
         String email = (String) memberAttribute.get("email");
+
+        String provider = (String) memberAttribute.get("provider");
+
         // 이메일로 가입된 회원인지 조회한다.
-        Optional<Member> findMember = memberService.findByEmail(email);
+        Optional<Member> findMember = memberService.findByEmailAndProvider(email, provider);
 
         log.info(memberAttribute.toString());
         log.info(findMember.toString());
@@ -66,7 +69,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         memberAttribute.put("exist", true);
         // 회원의 권한과, 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(findMember.get().getUserRole()))),
+                Collections.singleton(new SimpleGrantedAuthority(findMember.get().getUserRole())), //"ROLE_".concat()
                 memberAttribute, "email");
 
     }
