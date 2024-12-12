@@ -5,7 +5,9 @@ import com.example.spring.bzauthservice.dto.StatusResponseDto;
 import com.example.spring.bzauthservice.dto.TokenResponseStatus;
 import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.service.RefreshTokenService;
+import com.example.spring.bzauthservice.swagger.AuthControllerDocs;
 import com.example.spring.bzauthservice.token.RefreshToken;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +22,30 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auths")
-public class AuthController {
+@RequestMapping("/auths/token")
+public class AuthController implements AuthControllerDocs {
 
     private final RefreshTokenRepository tokenRepository;
     private final RefreshTokenService tokenService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/token/logout")
+    @GetMapping
+    public ResponseEntity<?> getToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    String token = cookie.getValue();
+                    if (jwtUtil.verifyToken(token)) {
+                        return ResponseEntity.ok(Collections.singletonMap("token", token));
+                    }
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    }
+
+    @PostMapping("/logout")
     public ResponseEntity<StatusResponseDto> logout(@RequestHeader("Authorization") final String accessToken) {
 
         // 엑세스 토큰으로 현재 Redis 정보 삭제
@@ -35,7 +53,7 @@ public class AuthController {
         return ResponseEntity.ok(StatusResponseDto.addStatus(200));
     }
 
-    @PostMapping("/token/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<TokenResponseStatus> refresh(@RequestHeader("Authorization") final String accessToken) {
 
         // 액세스 토큰으로 Refresh 토큰 객체를 조회
@@ -55,22 +73,6 @@ public class AuthController {
         }
 
         return ResponseEntity.badRequest().body(TokenResponseStatus.addStatus(400, null));
-    }
-
-    @GetMapping("/token")
-    public ResponseEntity<?> getToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("Authorization".equals(cookie.getName())) {
-                    String token = cookie.getValue();
-                    if (jwtUtil.verifyToken(token)) {
-                        return ResponseEntity.ok(Collections.singletonMap("token", token));
-                    }
-                }
-            }
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
 }

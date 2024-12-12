@@ -7,5 +7,4 @@ import lombok.Getter;
 @Builder
 public class JoinResponseDTO {
     private String url;
-
 }
