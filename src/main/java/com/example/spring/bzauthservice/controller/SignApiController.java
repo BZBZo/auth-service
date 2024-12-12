@@ -4,19 +4,20 @@ import com.example.spring.bzauthservice.dto.JoinResponseDTO;
 import com.example.spring.bzauthservice.dto.DuplicateResponseDTO;
 import com.example.spring.bzauthservice.dto.SecurityUserDto;
 import com.example.spring.bzauthservice.service.MemberService;
+import com.example.spring.bzauthservice.swagger.SignApiControllerDocs;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auths")
-public class SignApiController {
+public class SignApiController implements SignApiControllerDocs {
 
     private final MemberService memberService;
 
