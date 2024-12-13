@@ -1,16 +1,25 @@
 package com.example.spring.bzauthservice.controller;
 
+import com.example.spring.bzauthservice.config.jwt.JwtUtil;
 import com.example.spring.bzauthservice.dto.JoinResponseDTO;
 import com.example.spring.bzauthservice.dto.DuplicateResponseDTO;
 import com.example.spring.bzauthservice.dto.SecurityUserDto;
+import com.example.spring.bzauthservice.entity.Member;
+import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.service.MemberService;
+import com.example.spring.bzauthservice.token.RefreshToken;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -19,6 +28,9 @@ import org.springframework.web.servlet.view.RedirectView;
 public class SignApiController {
 
     private final MemberService memberService;
+    private final RefreshTokenRepository tokenRepository;
+    private final JwtUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(SignApiController.class);
 
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody SecurityUserDto securityUserDto) {
@@ -40,7 +52,7 @@ public class SignApiController {
     }
 
     @PostMapping("/check/businessNumber")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> checkBusinessNumber(@Valid @RequestParam String businessNumber) {
         System.out.println("사업자 번호 중복 체크");
         boolean exists = memberService.checkBusinessNumberExists(businessNumber);
@@ -63,7 +75,7 @@ public class SignApiController {
     }
 
     @PostMapping("/check/nickname")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> checkNickname(@Valid @RequestParam String nickname) {
         boolean exists = memberService.checkNicknameExists(nickname);
         System.out.println(nickname);
@@ -86,7 +98,7 @@ public class SignApiController {
     }
 
     @PostMapping("/check/sellerPhone")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> checkSellerPhone(@Valid @RequestParam String sellerPhone) {
         boolean exists = memberService.checkSellerPhoneExists(sellerPhone);
         if (exists) {
@@ -107,7 +119,8 @@ public class SignApiController {
     }
 
     @PostMapping("/check/customerPhone")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
+    //@Pattern(regexp = "^[0-9]{10,11}$", message = "전화번호는 10~11자리 숫자여야 합니다.")
     public ResponseEntity<?> checkCustomerPhone(@Valid @RequestParam String customerPhone) {
         boolean exists = memberService.checkCustomerPhoneExists(customerPhone);
         if (exists) {
@@ -127,5 +140,64 @@ public class SignApiController {
         }
     }
 
+    @GetMapping("/user/info")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
+        logger.info("Received Authorization Header in AuthService: {}", authorizationHeader);
 
+        // Bearer 부분을 제거
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        // JWT 토큰 검증 로그
+        logger.info("Extracted Token: {}", token);
+
+        // 액세스 토큰으로 Refresh 토큰 객체를 조회
+        Optional<RefreshToken> refreshToken = tokenRepository.findByAccessToken(token);
+
+        if (refreshToken.isPresent()) {
+            // RefreshToken이 존재하는 경우, 토큰 검증
+            logger.info("RefreshToken found for token: {}", token);
+
+            boolean isTokenValid = jwtUtil.verifyToken(refreshToken.get().getRefreshToken());
+            logger.info("JWT Token validity: {}", isTokenValid);
+
+            if (isTokenValid) {
+                RefreshToken resultToken = refreshToken.get();
+                String nickname = resultToken.getNickname();
+                Optional<Member> findMember = memberService.findByNickname(nickname);
+
+                if (findMember.isPresent()) {
+                    Member member = findMember.get();
+
+                    // Member 정보를 SecurityUserDto로 변환
+                    SecurityUserDto securityUserDto = SecurityUserDto.builder()
+                            .memberNo(member.getMemberNo())
+                            .email(member.getEmail())
+                            .nickname(member.getNickname())
+                            .phone(member.getPhone())
+                            .provider(member.getProvider())
+                            .introduce(member.getIntroduce())
+                            .role(member.getUserRole())
+                            .businessNumber(member.getBusinessNumber())
+                            .build();
+
+                    // 로그: 회원 정보 반환
+                    logger.info("Returning user info for member: {}", member.getNickname());
+                    return ResponseEntity.ok(securityUserDto);
+                } else {
+                    // 회원 정보가 없을 경우
+                    logger.error("User not found for nickname: {}", nickname);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
+                }
+            } else {
+                // 토큰이 유효하지 않음
+                logger.error("Invalid refresh token for token: {}", token);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+            }
+        } else {
+            // RefreshToken이 존재하지 않음
+            logger.error("RefreshToken not found for token: {}", token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
+    }
 }

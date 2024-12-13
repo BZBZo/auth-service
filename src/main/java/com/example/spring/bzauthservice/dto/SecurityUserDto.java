@@ -14,6 +14,7 @@ public class SecurityUserDto {
     private String provider;
     private String role;
     private String businessNumber;
+    private String introduce;
 
     public Member toMember(){
         return Member.builder()
@@ -23,6 +24,7 @@ public class SecurityUserDto {
                 .provider(provider)
                 .userRole(role)
                 .businessNumber(businessNumber)
+                .introduce(introduce)
                 .build();
 
     }

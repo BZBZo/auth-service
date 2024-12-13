@@ -13,8 +13,8 @@ public class RefreshTokenService {
     private final RefreshTokenRepository repository;
 
     @Transactional
-    public void saveTokenInfo(String email, String provider, String refreshToken, String accessToken) {
-        repository.save(new RefreshToken(email, provider, accessToken, refreshToken));
+    public void saveTokenInfo(String email, String provider, String nickname, String refreshToken, String accessToken) {
+        repository.save(new RefreshToken(email, provider, nickname, accessToken, refreshToken));
     }
 
     @Transactional
