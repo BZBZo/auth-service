@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
     // accessToken으로 RefreshToken을 찾아온다.
     Optional<RefreshToken> findByAccessToken(String accessToken);
+
+    Optional<RefreshToken> findByRefreshToken(String requestRefreshToken);
 }

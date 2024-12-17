@@ -1,5 +1,7 @@
 package com.example.spring.bzauthservice.swagger;
 
+import com.example.spring.bzauthservice.dto.TokenRefreshRequestDTO;
+import com.example.spring.bzauthservice.dto.RefreshTokenClientResponseDTO;
 import com.example.spring.bzauthservice.dto.StatusResponseDto;
 import com.example.spring.bzauthservice.dto.TokenResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,22 +13,23 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @Tag(name = "token API", description = "token 관련 API")
 public interface AuthControllerDocs {
 
-    @Operation(
-            summary = "Get Token",
-            description = "클라이언트가 쿠키에 credentials(Authorization)를 담아 보낸 요청에서 토큰을 반환합니다."
-    )
-    @Parameter(
-            name = "Authorization",
-            description = "클라이언트 쿠키에 담긴 인증 토큰",
-            required = true,
-            in = ParameterIn.COOKIE
-    )
-    public ResponseEntity<?> getToken(HttpServletRequest request);
+//    @Operation(
+//            summary = "Get Token",
+//            description = "클라이언트가 쿠키에 credentials(Authorization)를 담아 보낸 요청에서 토큰을 반환합니다."
+//    )
+//    @Parameter(
+//            name = "Authorization",
+//            description = "클라이언트 쿠키에 담긴 인증 토큰",
+//            required = true,
+//            in = ParameterIn.COOKIE
+//    )
+//    public ResponseEntity<?> getToken(HttpServletRequest request);
 
 
     @Operation(
@@ -72,5 +75,5 @@ public interface AuthControllerDocs {
             required = true,
             in = ParameterIn.HEADER
     )
-    public ResponseEntity<TokenResponseStatus> refresh(@RequestHeader("Authorization") final String accessToken);
+    public RefreshTokenClientResponseDTO refreshToken(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO);
 }
