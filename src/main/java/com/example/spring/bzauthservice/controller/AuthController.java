@@ -105,7 +105,7 @@ public class AuthController implements AuthControllerDocs {
         RefreshTokenClientResponseDTO responseDTO = RefreshTokenClientResponseDTO.builder()
                 .status(result)
                 .accessToken(newAccessToken)
-//                .refreshToken(newRefreshToken)
+                .refreshToken(strRefreshToken)
                 .build();
 
         return responseDTO;
