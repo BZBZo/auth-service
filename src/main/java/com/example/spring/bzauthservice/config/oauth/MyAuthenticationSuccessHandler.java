@@ -55,14 +55,14 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             String jwtToken = token.getAccessToken();
 
             // HTTP-Only 쿠키 생성
-            Cookie jwtCookie = new Cookie("Authorization", jwtToken); // Bearer 제거
-            jwtCookie.setHttpOnly(true); // HTTP-Only 설정
-            jwtCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
-            jwtCookie.setPath("/"); // 쿠키를 전체 도메인에서 사용할 수 있도록 설정
-            jwtCookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 유효기간 (7일)
+            Cookie accessTokenCookie = new Cookie("Authorization", jwtToken); // Bearer 제거
+            accessTokenCookie.setHttpOnly(true); // HTTP-Only 설정
+            accessTokenCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
+            accessTokenCookie.setPath("/"); // 쿠키를 전체 도메인에서 사용할 수 있도록 설정
+            accessTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 유효기간 (7일)
 
             // 응답에 쿠키 추가
-            response.addCookie(jwtCookie);
+            response.addCookie(accessTokenCookie);
 
             // 리다이렉트 처리
             String targetUrl = "http://localhost:8084/webs/loginSuccess";
