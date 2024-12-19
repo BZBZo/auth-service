@@ -36,6 +36,8 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         String email = oAuth2User.getAttribute("email");
         // 서비스 제공 플랫폼(GOOGLE, KAKAO, NAVER)이 어디인지 가져온다.
         String provider = oAuth2User.getAttribute("provider");
+        // 사용자 닉네임을 가져온다.
+        String nickname = oAuth2User.getAttribute("nickname");
 
         // CustomOAuth2UserService에서 셋팅한 로그인한 회원 존재 여부를 가져온다.
         boolean isExist = oAuth2User.getAttribute("exist");
@@ -48,7 +50,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         // 회원이 존재할경우
         if (isExist) {
             // 회원이 존재하면 jwt token 발행을 시작한다.
-            GeneratedToken token = jwtUtil.generateToken(email, provider, role);
+            GeneratedToken token = jwtUtil.generateToken(email, provider, nickname, role);
             log.info("jwtToken = {}", token.getAccessToken());
 
             // Bearer 접두어 없이 순수한 JWT 토큰을 설정

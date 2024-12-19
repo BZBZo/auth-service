@@ -9,6 +9,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -21,6 +23,7 @@ public class JwtUtil {
     private final JwtProperties jwtProperties;
     private final RefreshTokenService tokenService;
     private String secretKey;
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     @PostConstruct
     protected void init() {
@@ -28,7 +31,7 @@ public class JwtUtil {
     }
 
 
-    public GeneratedToken generateToken(String email, String provider, String role) {
+    public GeneratedToken generateToken(String email, String provider, String nickname, String role) {
         // refreshToken과 accessToken을 생성한다.
         String refreshToken = generateRefreshToken(email, provider, role);
         String accessToken = generateAccessToken(email, provider, role);
@@ -86,15 +89,19 @@ public class JwtUtil {
 
 
     public boolean verifyToken(String token) {
+        // 토큰 검증 시작 로그
+        logger.info("Verifying token: {}", token);
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey) // 비밀키를 설정하여 파싱한다.
                     .parseClaimsJws(token);  // 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
+            logger.info("Token is valid.");
             // 토큰의 만료 시간과 현재 시간비교
             return claims.getBody()
                     .getExpiration()
                     .after(new Date());  // 만료 시간이 현재 시간 이후인지 확인하여 유효성 검사 결과를 반환
         } catch (Exception e) {
+            logger.error("Token verification failed: {}", e.getMessage());
             return false;
         }
     }

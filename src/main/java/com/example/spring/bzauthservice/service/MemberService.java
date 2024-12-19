@@ -40,4 +40,8 @@ public class MemberService {
     public Optional<Member> findByEmailAndProvider(String email, String provider) {
         return memberRepository.findByEmailAndProvider(email, provider);
     }
+
+    public Optional<Member> findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
 }
