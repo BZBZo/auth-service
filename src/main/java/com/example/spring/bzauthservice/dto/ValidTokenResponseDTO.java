@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JoinResponseDTO {
-    private String url;
+public class ValidTokenResponseDTO {
+    private int statusNum;
 }

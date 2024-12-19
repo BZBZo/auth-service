@@ -9,6 +9,8 @@ import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.service.MemberService;
 import com.example.spring.bzauthservice.token.RefreshToken;
 import jakarta.validation.constraints.Pattern;
+import com.example.spring.bzauthservice.swagger.SignApiControllerDocs;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auths")
-public class SignApiController {
+public class SignApiController implements SignApiControllerDocs {
 
     private final MemberService memberService;
     private final RefreshTokenRepository tokenRepository;
