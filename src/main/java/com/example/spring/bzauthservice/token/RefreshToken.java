@@ -17,7 +17,6 @@ public class RefreshToken implements Serializable {
     private String id;
 
     private String provider;
-    private String nickname;
 
     @Indexed
     private String accessToken;

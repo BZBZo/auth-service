@@ -37,7 +37,7 @@ public class JwtUtil {
         String accessToken = generateAccessToken(email, provider, role);
 
         // 토큰을 Redis에 저장한다.
-        tokenService.saveTokenInfo(email, nickname, provider, refreshToken, accessToken);
+        tokenService.saveTokenInfo(email, provider, refreshToken, accessToken);
         return new GeneratedToken(accessToken, refreshToken);
     }
 

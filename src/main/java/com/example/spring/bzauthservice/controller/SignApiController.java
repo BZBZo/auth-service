@@ -143,8 +143,6 @@ public class SignApiController {
     @GetMapping("/user/info")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
-        logger.info("Received Authorization Header in AuthService: {}", authorizationHeader);
-
         // Bearer 부분을 제거
         String token = authorizationHeader.replace("Bearer ", "");
 
@@ -162,9 +160,9 @@ public class SignApiController {
             logger.info("JWT Token validity: {}", isTokenValid);
 
             if (isTokenValid) {
-                RefreshToken resultToken = refreshToken.get();
-                String nickname = resultToken.getNickname();
-                Optional<Member> findMember = memberService.findByNickname(nickname);
+                String email = refreshToken.get().getId();
+                String provider = refreshToken.get().getProvider();
+                Optional<Member> findMember = memberService.findByEmailAndProvider(email, provider);
 
                 if (findMember.isPresent()) {
                     Member member = findMember.get();
@@ -186,7 +184,8 @@ public class SignApiController {
                     return ResponseEntity.ok(securityUserDto);
                 } else {
                     // 회원 정보가 없을 경우
-                    logger.error("User not found for nickname: {}", nickname);
+                    logger.error("User not found for email: {}", email);
+                    logger.error("User not found for provider: {}", provider);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보를 찾을 수 없습니다.");
                 }
             } else {
