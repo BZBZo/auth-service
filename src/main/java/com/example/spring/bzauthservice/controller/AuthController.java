@@ -59,6 +59,12 @@ public class AuthController implements AuthControllerDocs {
         return ResponseEntity.ok(StatusResponseDto.addStatus(200));
     }
 
+    @PostMapping("/gateValidToken")
+    public ValidTokenResponseDTO gateValidToken(@RequestBody ValidTokenRequestDTO validTokenRequestDTO) {
+        log.info("validToken");
+        return tokenProviderService.validToken(validTokenRequestDTO.getToken());
+    }
+
     @PostMapping("/validToken")
     public ResponseEntity<?> validToken(@RequestBody ValidTokenRequestDTO tokenRequest) {
         // 요청 본문에서 token을 받아서 처리
