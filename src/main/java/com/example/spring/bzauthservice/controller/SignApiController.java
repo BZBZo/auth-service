@@ -43,6 +43,8 @@ public class SignApiController implements SignApiControllerDocs {
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody SecurityUserDto securityUserDto) {
         log.info("join");
+        log.info("securityUserDto: {}", securityUserDto);
+        log.info(securityUserDto.toString());
         try{
             memberService.join(securityUserDto.toMember());
             return ResponseEntity.ok(
@@ -53,7 +55,7 @@ public class SignApiController implements SignApiControllerDocs {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     JoinResponseDTO.builder()
-                            .url("/webs/join")
+                            .url("/webs/signin")
                             .build()
             );
         }
