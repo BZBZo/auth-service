@@ -11,12 +11,24 @@ spring:
     password: 1234
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
   data:
     redis:
       port: 6379
       host: localhost
       password: 1234
+
+cloud:
+  aws:
+    s3:
+      bucket: mention-bucket.bucket
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
