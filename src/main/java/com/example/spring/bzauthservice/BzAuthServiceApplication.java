@@ -1,5 +1,6 @@
 package com.example.spring.bzauthservice;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,6 +11,14 @@ public class BzAuthServiceApplication {
     }
 
     public static void main(String[] args) {
+
+        // Load .env file
+        Dotenv dotenv = Dotenv.configure().load();
+
+        // Set system properties for AWS keys
+        System.setProperty("AWS_ACCESS_KEY_ID", dotenv.get("AWS_ACCESS_KEY_ID"));
+        System.setProperty("AWS_SECRET_ACCESS_KEY", dotenv.get("AWS_SECRET_ACCESS_KEY"));
+
         SpringApplication.run(BzAuthServiceApplication.class, args);
     }
 
