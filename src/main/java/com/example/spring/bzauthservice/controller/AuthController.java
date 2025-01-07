@@ -6,17 +6,18 @@ import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.service.RefreshTokenService;
 import com.example.spring.bzauthservice.service.TokenProviderService;
 import com.example.spring.bzauthservice.swagger.AuthControllerDocs;
-import com.example.spring.bzauthservice.token.GeneratedToken;
 import com.example.spring.bzauthservice.token.RefreshToken;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -51,12 +52,40 @@ public class AuthController implements AuthControllerDocs {
 //        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 //    }
 
-    @PostMapping("/logout")
-    public ResponseEntity<StatusResponseDto> logout(@RequestHeader("Authorization") final String accessToken) {
+//    @PostMapping("/logout")
+//    public ResponseEntity<StatusResponseDto> logout(@RequestHeader("Authorization") final String accessToken) {
+//
+//        // 엑세스 토큰으로 현재 Redis 정보 삭제
+//        refreshTokenService.removeRefreshToken(accessToken);
+//        return ResponseEntity.ok(StatusResponseDto.addStatus(200));
+//    }
 
-        // 엑세스 토큰으로 현재 Redis 정보 삭제
-        refreshTokenService.removeRefreshToken(accessToken);
-        return ResponseEntity.ok(StatusResponseDto.addStatus(200));
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader, HttpServletResponse response) {
+        System.out.println(authHeader +" 제발 되세요");
+
+        try {
+            // Refresh Token 삭제
+            refreshTokenService.removeRefreshToken(authHeader);
+
+            System.out.println("삭제 완료");
+
+            // Authorization 쿠키 만료
+            Cookie authorizationCookie = new Cookie("Authorization", null);
+            authorizationCookie.setHttpOnly(true);
+            authorizationCookie.setSecure(true); // HTTPS 환경에서 사용
+            authorizationCookie.setPath("/"); // 쿠키 경로 설정
+            authorizationCookie.setMaxAge(0); // 즉시 만료
+            response.addCookie(authorizationCookie);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(Map.of("message", "Logout successful."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(Map.of("message", "An error occurred during logout."));
+        }
     }
 
     @PostMapping("/gateValidToken")
