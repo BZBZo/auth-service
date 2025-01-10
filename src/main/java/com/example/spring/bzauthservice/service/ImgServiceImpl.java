@@ -15,9 +15,13 @@ public class ImgServiceImpl implements ImgService {
 
     @Override
     @Transactional
-    public void uploadImg(String name, MultipartFile file) {
+    public String uploadImg(String name, MultipartFile file) {
         String url = "";
-        if(file != null)  url = s3Uploader.uploadFileToS3(file, "static/bz-image");
-
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("MultipartFile must not be null or empty.");
+        } else {
+            url = s3Uploader.uploadFileToS3(file, "static/bz-profile/");
+            return url;
+        }
     }
 }
