@@ -210,6 +210,21 @@ public class SignApiController implements SignApiControllerDocs {
         }
     }
 
+    @GetMapping("/user/memberNo")
+    public ResponseEntity<Long> getMemberNo(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String email = jwtUtil.getUid(token);
+        String provider = jwtUtil.getProvider(token);
+
+        Optional<Member> findMember = memberService.findByEmailAndProvider(email, provider);
+
+        if (findMember.isPresent()) {
+            return ResponseEntity.ok(findMember.get().getMemberNo());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @PutMapping("/user/update/{field}")
     public ResponseEntity<?> updateUserField(
             @RequestHeader("Authorization") String authorizationHeader,
