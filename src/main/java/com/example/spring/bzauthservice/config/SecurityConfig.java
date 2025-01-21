@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auths/signin/**", "/auths/join", "/auths/check/**","/auths/token/**",
-                                "/swagger-ui/**", "/api*", "/api-docs/**","/v3/api-docs/**"
+                                "/swagger-ui/**", "/api*", "/api-docs/**","/v3/api-docs/**", "/auths/members",
+                                "/oauth2/**"
                                 ).permitAll()
                         .anyRequest().authenticated())
 
@@ -64,13 +65,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8084")); // front-service의 주소
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8084","http://bz-front-service:90")); // front-service의 주소
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/auths/**", configuration); // /auth/** 경로에 CORS 설정 적용
+        source.registerCorsConfiguration("/oauth2/**", configuration); // /oauth2/** 경로에 CORS 설정 적용
         return source;
     }
 }
