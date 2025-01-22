@@ -113,9 +113,12 @@ services:
       - ./data/refresh-token-data:/data
       - ./data/refresh-token-data/redis.conf:/usr/local/etc/redis-refresh-token/redis.conf
 ```
-터미널에서 프로젝트 위치로 이동(cd)하신 뒤, 
-docker-compose up -d (docker compose V1)
-docker compose up -d (docker compose V2)
+터미널에서 프로젝트 위치로 이동(cd)하신 뒤,  
+
+docker-compose up -d (docker compose V1)  
+
+docker compose up -d (docker compose V2)  
+
 해주세요.
 
 
