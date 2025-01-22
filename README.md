@@ -115,9 +115,9 @@ services:
 ```
 터미널에서 프로젝트 위치로 이동(cd)하신 뒤,  
 
-docker-compose up -d (docker compose V1)  
+docker-compose up -d (docker compose 버전이 V1인 경우,)  
 
-docker compose up -d (docker compose V2)  
+docker compose up -d (docker compose 버전이 V2인 경우,)  
 
 해주세요.
 
