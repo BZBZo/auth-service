@@ -113,7 +113,10 @@ services:
       - ./data/refresh-token-data:/data
       - ./data/refresh-token-data/redis.conf:/usr/local/etc/redis-refresh-token/redis.conf
 ```
-터미널에서 프로젝트 위치로 이동(cd)하신 뒤, docker-compose up -d 해주세요.
+터미널에서 프로젝트 위치로 이동(cd)하신 뒤, 
+docker-compose up -d (docker compose V1)
+docker compose up -d (docker compose V2)
+해주세요.
 
 
 Redis에 접속해서 cli 환경으로 간단한 작업을 하려고 하는 경우에는 아래와 같은 명령어를 입력하여 접속합니다.
