@@ -62,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .phone(findMember.getPhone())
                         .provider(findMember.getProvider())
                         .introduce(findMember.getIntroduce())
-                        .role(findMember.getUserRole())
+                        .userRole(findMember.getUserRole())
                         .businessNumber(findMember.getBusinessNumber())
                         .build();
 
@@ -82,7 +82,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     public Authentication getAuthentication(SecurityUserDto member) {
         return new UsernamePasswordAuthenticationToken(member, "",
-                List.of(new SimpleGrantedAuthority(member.getRole())));
+                List.of(new SimpleGrantedAuthority(member.getUserRole())));
     }
 
 }

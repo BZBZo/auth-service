@@ -2,13 +2,16 @@ package com.example.spring.bzauthservice.controller;
 
 import com.example.spring.bzauthservice.config.jwt.JwtUtil;
 import com.example.spring.bzauthservice.dto.*;
+import com.example.spring.bzauthservice.entity.Member;
 import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
+import com.example.spring.bzauthservice.service.MemberService;
 import com.example.spring.bzauthservice.service.RefreshTokenService;
 import com.example.spring.bzauthservice.service.TokenProviderService;
 import com.example.spring.bzauthservice.swagger.AuthControllerDocs;
 import com.example.spring.bzauthservice.token.RefreshToken;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,6 +34,7 @@ public class AuthController implements AuthControllerDocs {
     private final RefreshTokenService refreshTokenService;
     private final TokenProviderService tokenProviderService;
     private final JwtUtil jwtUtil;
+    private final MemberService memberService;
 
 //    @GetMapping
 //    public ResponseEntity<?> getToken(HttpServletRequest request) {

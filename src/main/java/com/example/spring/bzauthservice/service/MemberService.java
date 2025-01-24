@@ -7,8 +7,8 @@ import com.example.spring.bzauthservice.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,6 +51,8 @@ public class MemberService {
         return memberRepository.findByNickname(nickname);
     }
 
+
+
     // 회원 삭제
     public boolean deleteMember(Long memberNo) {
         try {
@@ -76,6 +78,7 @@ public class MemberService {
                 member.setIntroduce(value);  // introduce 또는 shopIntroduction 필드 처리
                 break;
             case "profileImage":
+                member.setProfilePic(value);
             case "shopImage":
                 member.setProfilePic(value);  // profileImage 또는 shopImage 필드 처리
                 break;
@@ -93,6 +96,15 @@ public class MemberService {
         }
         return memberRepository.save(member);
     }
+
+    public List<Member> findAll() {
+        return memberRepository.findAll();
+    }
+
+    public Optional<Member> findByMemberNo(Long memberNo) {
+        return memberRepository.findById(memberNo);
+    }
+
 
 //    public Member updateMemberImage(Member member, String field, MultipartFile file) {
 //        String imageUrl = uploadImageToStorage(file);  // 이미지 업로드 로직 구현 필요
