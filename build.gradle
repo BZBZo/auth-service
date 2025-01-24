@@ -30,6 +30,7 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	implementation 'org.flywaydb:flyway-mysql'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -67,9 +68,9 @@ dependencies {
 
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 
 tasks.named('jar') {
 	enabled = false
@@ -79,4 +80,13 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"  // Spring Cloud BOM 버전 관리
 	}
+}
+
+bootBuildImage {
+	imageName = "${project.name}"
+	builder = "paketobuildpacks/builder:full"
+	environment = [
+			"BP_PLATFORM": "linux/amd64", // 플랫폼 명시
+			"BP_JVM_VERSION": "21"
+	]
 }
