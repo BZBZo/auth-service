@@ -74,7 +74,7 @@ public class MemberService {
     public Member updateMemberField(Member member, String field, String value) {
         switch (field) {
             case "introduce":
-            case "shopIntroduction":
+            case "shopIntroduce":
                 member.setIntroduce(value);  // introduce 또는 shopIntroduction 필드 처리
                 break;
             case "profileImage":
