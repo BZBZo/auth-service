@@ -213,6 +213,7 @@ public class SignApiController implements SignApiControllerDocs {
                             .introduce(member.getIntroduce())
                             .userRole(member.getUserRole())
                             .businessNumber(member.getBusinessNumber())
+                            .profilePic(member.getProfilePic())
                             .build();
 
                     // 로그: 회원 정보 반환
