@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -176,7 +177,7 @@ public class SignApiController implements SignApiControllerDocs {
     }
 
 
-    @GetMapping("/user/info")
+    @GetMapping(value = "/user/info", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader) {
         // Bearer 부분을 제거
@@ -258,6 +259,14 @@ public class SignApiController implements SignApiControllerDocs {
             return securityUserDto;
 
         } else throw new RuntimeException("Member not found for memberNo: " + memberNo);
+    }
+
+    @PostMapping("/writers/detail")
+    public ResponseEntity<List<SecurityUserDto>> fetchWritersByMemberNos(@RequestBody Set<Long> memberNos) {
+        List<SecurityUserDto> writers = memberService.fetchWritersByMemberNos(memberNos);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(writers);
     }
 
     @GetMapping("/user/memberNo")

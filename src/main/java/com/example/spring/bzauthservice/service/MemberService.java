@@ -1,5 +1,6 @@
 package com.example.spring.bzauthservice.service;
 
+import com.example.spring.bzauthservice.dto.SecurityUserDto;
 import com.example.spring.bzauthservice.entity.Member;
 import com.example.spring.bzauthservice.repository.MemberRepository;
 import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,6 +106,21 @@ public class MemberService {
 
     public Optional<Member> findByMemberNo(Long memberNo) {
         return memberRepository.findById(memberNo);
+    }
+
+    public List<SecurityUserDto> fetchWritersByMemberNos(Set<Long> memberNos) {
+        // memberNos에 해당하는 회원 정보를 조회
+        List<Member> members = memberRepository.findByMemberNoIn(memberNos);
+
+        // 조회한 회원 정보를 SecurityUserDto로 변환하여 반환
+        return members.stream()
+                .map(member -> SecurityUserDto.builder()
+                        .memberNo(member.getMemberNo())
+                        .nickname(member.getNickname())
+                        .profilePic(member.getProfilePic())
+                        .introduce(member.getIntroduce())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 
