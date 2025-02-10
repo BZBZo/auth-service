@@ -6,14 +6,18 @@ import com.example.spring.bzauthservice.repository.MemberRepository;
 import com.example.spring.bzauthservice.repository.RefreshTokenRepository;
 import com.example.spring.bzauthservice.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -21,15 +25,35 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private Logger logger;
 
+    @Value("${default.profile.image.url}")
+    private String defaultProfileImageUrl;
+
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
+//    public void join(Member member) {
+//        System.out.println(member.getEmail()+"  "+member.getNickname()+"  "+member.getUserRole());
+//        memberRepository.save(member);
+//        System.out.println("저장했어요");
+//    }
+
     public void join(Member member) {
         System.out.println(member.getEmail()+"  "+member.getNickname()+"  "+member.getUserRole());
+        log.info("회원가입 요청: email={}, nickname={}", member.getEmail(), member.getNickname());
+        log.info("현재 profilePic 값: {}", member.getProfilePic());
+
+        // 기본 프로필 이미지 적용 여부 확인
+        if (member.getProfilePic() == null || member.getProfilePic().isEmpty()) {
+            member.setProfilePic(defaultProfileImageUrl);
+            log.info("기본 프로필 이미지 적용: {}", defaultProfileImageUrl);
+        }
+
         memberRepository.save(member);
         System.out.println("저장했어요");
+        log.info("회원가입 완료: memberNo={}, profilePic={}", member.getMemberNo(), member.getProfilePic());
     }
+
     public boolean checkBusinessNumberExists(String businessNumber) {
         return memberRepository.findByBusinessNumber(businessNumber).isPresent();
     }
@@ -124,17 +148,17 @@ public class MemberService {
     }
 
 
-//    public Member updateMemberImage(Member member, String field, MultipartFile file) {
-//        String imageUrl = uploadImageToStorage(file);  // 이미지 업로드 로직 구현 필요
-//        member.setProfilePic(imageUrl);
-//        return memberRepository.save(member);
-//    }
-//
-//    private String uploadImageToStorage(MultipartFile file) {
-//        // 이미지 업로드 로직 구현
-//        // 예: S3, 로컬 파일 시스템 등에 업로드하고 URL 반환
-//        return "uploaded_image_url";
-//    }
+    public Member updateMemberImage(Member member, String field, MultipartFile file) {
+        String imageUrl = uploadImageToStorage(file);  // 이미지 업로드 로직 구현 필요
+        member.setProfilePic(imageUrl);
+        return memberRepository.save(member);
+    }
+
+    private String uploadImageToStorage(MultipartFile file) {
+        // 이미지 업로드 로직 구현
+        // 예: S3, 로컬 파일 시스템 등에 업로드하고 URL 반환
+        return "uploaded_image_url";
+    }
 
 
 }

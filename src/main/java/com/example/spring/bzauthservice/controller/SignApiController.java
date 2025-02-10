@@ -304,7 +304,7 @@ public class SignApiController implements SignApiControllerDocs {
     }
 
 
-    @PostMapping("/user/update/{field}")
+    @PostMapping(value = "/user/update/{field}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateUserImage(
             @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable String field,
