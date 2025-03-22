@@ -29,6 +29,8 @@ public class OAuth2Attribute {
                 return ofKakao(provider,"email", attributes);
             case "naver":
                 return ofNaver(provider, "id", attributes);
+            case "email":
+                return ofSelf(provider, "email", attributes);
             default:
                 throw new RuntimeException();
         }
@@ -81,6 +83,15 @@ public class OAuth2Attribute {
                 .build();
     }
 
+    private static OAuth2Attribute ofSelf(String provider, String attributeKey,
+                                            Map<String, Object> attributes) {
+        return OAuth2Attribute.builder()
+                .email((String) attributes.get("email"))
+                .provider(provider)
+                .attributes(attributes)
+                .attributeKey(attributeKey)
+                .build();
+    }
 
     // OAuth2User 객체에 넣어주기 위해서 Map으로 값들을 반환해준다.
     public Map<String, Object> convertToMap() {
